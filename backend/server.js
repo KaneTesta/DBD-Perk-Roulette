@@ -9,9 +9,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/perks', createProxyMiddleware({ target: ' https://dbd-api.herokuapp.com', changeOrigin: true }));
-app.use('/offerings', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
-app.use('/items', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
-app.use('/itemaddons', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
+app.use('/api/offerings', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
+app.use('/api/items', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
+app.use('/api/itemaddons', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
 
 
 app.use(function(req, res, next) {
