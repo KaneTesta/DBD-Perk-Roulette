@@ -110,7 +110,6 @@ export default class SurvivorRandomPerks extends Component {
         two_addons.push(newAddons[randInd[0]])
         two_addons.push(newAddons[randInd[1]])
 
-        console.log(two_addons)
         this.setState({addons: two_addons})
       
       })
@@ -123,8 +122,6 @@ export default class SurvivorRandomPerks extends Component {
       .then(response => {
         var offerings = Object.values(response.data);
         var item_selected = false;
-
-        console.log(offerings)
 
         while (!item_selected) {
 

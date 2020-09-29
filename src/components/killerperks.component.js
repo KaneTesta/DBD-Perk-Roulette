@@ -20,15 +20,6 @@ const Item = item => (
   </tr>
 )
 
-const Addon = addon => (
-  <tr>
-    <td></td>
-    <td>{addon.addon.displayName}</td>
-    <td dangerouslySetInnerHTML={{__html: addon.addon.description}}></td>
-    <td></td>
-  </tr>
-)
-
 const Offering = offering => (
   <tr>
     <td></td>
@@ -44,7 +35,7 @@ export default class KillerRandomPerks extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {perks: [], item: [], addons: [], offering: []};
+    this.state = {perks: [], item: [], offering: []};
   }
 
   componentDidMount() {
@@ -78,7 +69,7 @@ export default class KillerRandomPerks extends Component {
         var randPerks = Math.floor(Math.random() * responseLength);
         var selectedItem = fullData[keysList[randPerks]];
 
-        if (!selectedItem.isInNonViolentBuild && selectedItem.antiDLC) {
+        if (!selectedItem.isInNonViolentBuild) {
           this.setState({item: [selectedItem]})
           item_selected = true;
         }
@@ -89,34 +80,6 @@ export default class KillerRandomPerks extends Component {
       console.log(error)
     });
 
-    //Get addon
-    axios.get(process.env.REACT_APP_BASE_API_URL + '/api/itemaddons', {'Content-Type': 'application/json'})
-      .then(response => {
-        var addons = Object.values(response.data);
-        var newAddons = []
-        var selectedItem = this.state.item[0];
-
-        for (var el of addons) {
-          for (var parEl of el.parentItems) {
-            if (parEl === selectedItem.id) {
-              newAddons.push(el);
-            }
-          }
-        }
-
-        var two_addons = []
-        var randInd = [Math.floor(Math.random() * newAddons.length), Math.floor(Math.random() * newAddons.length)];
-        
-        two_addons.push(newAddons[randInd[0]])
-        two_addons.push(newAddons[randInd[1]])
-
-        console.log(two_addons)
-        this.setState({addons: two_addons})
-      
-      })
-      .catch((error) => {
-        console.log(error)
-      });
 
     //Get offering
     axios.get(process.env.REACT_APP_BASE_API_URL + '/api/offerings', {'Content-Type': 'application/json'})
@@ -124,14 +87,12 @@ export default class KillerRandomPerks extends Component {
         var offerings = Object.values(response.data);
         var item_selected = false;
 
-        console.log(offerings)
-
         while (!item_selected) {
 
           var randInt = Math.floor(Math.random() * offerings.length);
           var offeringSelection = offerings[randInt];
   
-          if (!offeringSelection.isInNonViolentBuild && offeringSelection.antiDLC) {
+          if (!offeringSelection.isInNonViolentBuild) {
             this.setState({offering: [offeringSelection]})
             item_selected = true;
           }
@@ -152,12 +113,6 @@ export default class KillerRandomPerks extends Component {
   itemList() {
     return this.state.item.map((selectedItem, i) => {
       return <Item item={selectedItem} key={i}/>;
-    })
-  }
-
-  addonList() {
-    return this.state.addons.map((addons, i) => {
-      return <Addon addon={addons} key={i}/>;
     })
   }
 
@@ -196,19 +151,6 @@ export default class KillerRandomPerks extends Component {
 
       <tbody>
         { this.itemList() }
-      </tbody>
-            
-      <thead>
-        <tr>
-          <th></th>
-          <th>Add-on</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-      { this.addonList() }
       </tbody>
             
       <thead>
