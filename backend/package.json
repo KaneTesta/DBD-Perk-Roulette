@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {    
-    "client-install": "npm install --prefix client",
-    "start": "node server.js",
-    "client": "npm start --prefix client"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
