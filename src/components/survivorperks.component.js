@@ -1,41 +1,79 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Table from 'react-bootstrap/Table'
+import { trackPromise } from 'react-promise-tracker';
+import Loader from 'react-loader-spinner';
+import { usePromiseTracker } from "react-promise-tracker";
+import FadeIn from 'react-fade-in';
+
+const LoadingIndicator = props => {
+  const { promiseInProgress } = usePromiseTracker();
+
+  return promiseInProgress && 
+    <div
+      style={{
+        width: "90%",
+        height: "90%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "40px"
+      }}
+    >
+    <Loader type="Oval" color="#ff0000" />
+    </div>
+};
 
 const Perk = props => (
-  <tr>
-    <td><img src={props.perk.icon} alt={props.perk.perk_name}></img></td>
-    <td>{props.perk.perk_name}</td>
-    <td>{props.perk.description}</td>
-    <td>{props.perk.name}</td>
-  </tr>
+  <FadeIn>
+    <Table striped bordered hover variant="dark">
+    <tr>
+      <td><img src={props.perk.icon} alt={props.perk.perk_name}></img></td>
+      <td>{props.perk.perk_name}</td>
+      <td>{props.perk.description}</td>
+      <td>{props.perk.name}</td>
+    </tr>
+    </Table>
+  </FadeIn>
 )
 
 const Item = item => (
-  <tr>
-    <td></td>
-    <td>{item.item.displayName}</td>
-    <td dangerouslySetInnerHTML={{__html: item.item.description}}></td>
-    <td></td>
-  </tr>
+  <FadeIn>
+    <Table striped bordered hover variant="dark">
+    <tr>
+    <td><img src={`https://dbd-stats.info/data/Public/${item.item.iconPathList[0]}`} alt="" /></td>
+      <td>{item.item.displayName}</td>
+      <td dangerouslySetInnerHTML={{__html: item.item.description}}></td>
+      <td></td>
+    </tr>
+    </Table>
+  </FadeIn>
 )
 
 const Addon = addon => (
-  <tr>
-    <td></td>
-    <td>{addon.addon.displayName}</td>
-    <td dangerouslySetInnerHTML={{__html: addon.addon.description}}></td>
-    <td></td>
-  </tr>
+  <FadeIn>
+    <Table striped bordered hover variant="dark">
+    <tr>
+    <td><img src={`https://dbd-stats.info/data/Public/${addon.addon.iconPathList[0]}`} alt="" /></td>
+      <td>{addon.addon.displayName}</td>
+      <td dangerouslySetInnerHTML={{__html: addon.addon.description}}></td>
+      <td></td>
+    </tr>
+    </Table>
+  </FadeIn>
 )
 
 const Offering = offering => (
-  <tr>
-    <td></td>
-    <td>{offering.offering.displayName}</td>
-    <td dangerouslySetInnerHTML={{__html: offering.offering.description}}></td>
-    <td></td>
-  </tr>
+  <FadeIn>
+    <Table striped bordered hover variant="dark">
+    <tr>
+    <td><img src={`https://dbd-stats.info/data/Public/${offering.offering.iconPathList[0]}`} alt="" /></td>
+      <td>{offering.offering.displayName}</td>
+      <td dangerouslySetInnerHTML={{__html: offering.offering.description}}></td>
+      <td></td>
+    </tr>
+    </Table>
+  </FadeIn>
 )
 
 
@@ -50,7 +88,7 @@ export default class SurvivorRandomPerks extends Component {
   componentDidMount() {
 
     //Build Random Perks
-    axios.get(process.env.REACT_APP_BASE_API_URL + '/perks?lang=en&role=Survivor&is_ptb=false', {'Content-Type': 'application/json'})
+    trackPromise(axios.get(process.env.REACT_APP_BASE_API_URL + '/perks?lang=en&role=Survivor&is_ptb=false', {'Content-Type': 'application/json'})
     .then(response => {
 
       var fullData = response.data;
@@ -63,10 +101,10 @@ export default class SurvivorRandomPerks extends Component {
     })
     .catch((error) => {
       console.log(error)
-    });
+    }));
 
     //Build random Items
-    axios.get(process.env.REACT_APP_BASE_API_URL + '/api/items', {'Content-Type': 'application/json'})
+    trackPromise(axios.get(process.env.REACT_APP_BASE_API_URL + '/api/items', {'Content-Type': 'application/json'})
     .then(response => {
       var item_selected = false;
       var fullData = response.data;
@@ -87,10 +125,10 @@ export default class SurvivorRandomPerks extends Component {
     })
     .catch((error) => {
       console.log(error)
-    });
+    }));
 
     //Get addon
-    axios.get(process.env.REACT_APP_BASE_API_URL + '/api/itemaddons', {'Content-Type': 'application/json'})
+    trackPromise(axios.get(process.env.REACT_APP_BASE_API_URL + '/api/itemaddons', {'Content-Type': 'application/json'})
       .then(response => {
         var addons = Object.values(response.data);
         var newAddons = []
@@ -115,10 +153,10 @@ export default class SurvivorRandomPerks extends Component {
       })
       .catch((error) => {
         console.log(error)
-      });
+      }));
 
     //Get offering
-    axios.get(process.env.REACT_APP_BASE_API_URL + '/api/offerings', {'Content-Type': 'application/json'})
+    trackPromise(axios.get(process.env.REACT_APP_BASE_API_URL + '/api/offerings', {'Content-Type': 'application/json'})
       .then(response => {
         var offerings = Object.values(response.data);
         var item_selected = false;
@@ -137,7 +175,7 @@ export default class SurvivorRandomPerks extends Component {
       })
       .catch((error) => {
         console.log(error)
-      });
+      }));
   }
 
   perksList() {
@@ -166,62 +204,20 @@ export default class SurvivorRandomPerks extends Component {
 
   render() {
     return (
-      <Table striped bordered hover variant="dark">
-      
-      <thead>
-        <tr>
-          <th>Icon</th>
-          <th>Perks</th>
-          <th>Description</th>
-          <th>Character</th>
-        </tr>
-      </thead>
-
-      <tbody>
+      <div>
+        <h2>Perks</h2>
+        <LoadingIndicator/>
         { this.perksList() }
-      </tbody>
-
-            
-      <thead>
-        <tr>
-          <th></th>
-          <th>Item</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
+        <h2>Items</h2>
+        <LoadingIndicator/>
         { this.itemList() }
-      </tbody>
-            
-      <thead>
-        <tr>
-          <th></th>
-          <th>Addon</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-      { this.addonList() }
-      </tbody>
-            
-      <thead>
-        <tr>
-          <th></th>
-          <th>Offering</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-      { this.offeringList() }
-      </tbody>
-
-      </Table>
+        <h2>Addons</h2>
+        <LoadingIndicator/>
+        { this.addonList() }
+        <h2>Offerings</h2>
+        <LoadingIndicator/>
+        { this.offeringList() }
+      </div>
     );
   }
 }
