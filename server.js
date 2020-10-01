@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -12,6 +13,8 @@ app.use('/perks', createProxyMiddleware({ target: ' https://dbd-api.herokuapp.co
 app.use('/api/offerings', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
 app.use('/api/items', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
 app.use('/api/itemaddons', createProxyMiddleware({ target: 'https://dbd-stats.info/', changeOrigin: true }));
+
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 
 app.use(function(req, res, next) {
